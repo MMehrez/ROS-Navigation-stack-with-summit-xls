@@ -1,0 +1,94 @@
+%-------------------------------------------------------------------------------
+% Installing the robot packages on a local machine (Your computer)
+%-------------------------------------------------------------------------------
+sudo apt-get install <the following packages>
+
+ros-kinetic-summit-xl-common         
+ros-kinetic-summit-xl-gazebo 
+ros-kinetic-summit-xl-pad            
+ros-kinetic-summit-xl-sim-bringup
+ros-kinetic-summit-xl-control        
+ros-kinetic-summit-xl-localization   
+ros-kinetic-summit-xl-robot-control  
+ros-kinetic-summit-xl-description    
+ros-kinetic-summit-xl-navigation     
+ros-kinetic-summit-xl-sim   
+
+ros-kinetic-robotnik-msgs     
+ros-kinetic-robotnik-sensors  
+
+ros-kinetic-navigation
+ros-kinetic-gmapping
+
+% I cloned and installed the following packages in catkin_ws
+% clone from
+https://github.com/RobotnikAutomation/summit_xl_common
+https://github.com/RobotnikAutomation/summit_xl_sim
+
+summit_xl_common
+summit_xl_sim
+
+% I used the below commands in the catkin_ws directoruy whenever there was a dependency problem
+rosdep install --from-paths src --ignore-src --rosdistro kinetic -y
+
+
+% now you can run a simulation by running the following command from the terminal
+roslaunch summit_xl_sim_bringup summit_xls_complete.launch
+
+% you may need to install the following, if the above launch file did not start correctly
+sudo apt install ros-kinetic-gazebo-ros-control
+
+%-------------------------------------------------------------------------------
+%-------------------------------------------------------------------------------
+
+
+%-------------------------------------------------------------------------------
+% installing and running the teleop package
+% install the package using the following
+%-------------------------------------------------------------------------------
+sudo apt-get install ros-kinetic-teleop-twist-keyboard
+
+% then run the teleop node using
+rosrun teleop_twist_keyboard teleop_twist_keyboard.py
+
+% run the following node
+rosrun teleop_twist_keyboard teleop_twist_keyboard.py /cmd_vel:=/summit_xl_a/move/cmd_vel 
+% now you can teleoperate the robot in the simulation
+
+%-------------------------------------------------------------------------------
+%-------------------------------------------------------------------------------
+
+
+
+%-------------------------------------------------------------------------------
+% Map generation using gmapping
+%-------------------------------------------------------------------------------
+% run the following 
+roslaunch summit_xl_sim_bringup summit_xls_complete.launch gmapping_robot_a:=true
+rosrun teleop_twist_keyboard teleop_twist_keyboard.py /cmd_vel:=/summit_xl_a/move/cmd_vel 
+
+% now wander the robot in the environment to create the map.
+% after you are satisfied with what you have, change the directory of a new terminal to
+% /catkin_ws/src/summit_xl_common/summit_xl_localization/maps
+% and run
+rosrun map_server map_saver -f my_map_1 /map:=/summit_xl_a/map
+
+% now your map file is saved. 
+% note that we reset the /map topic to the equivalent one being published
+% note also that to use the created map with the default package settings, the map
+% has to be saved in the mentioned directory
+
+% now to launch the simulation with the new map file, you should provide the following
+% options
+
+roslaunch summit_xl_sim_bringup summit_xls_complete.launch amcl_and_mapserver_a:=true map_file_a:=my_map_1.yaml
+
+
+%-------------------------------------------------------------------------------
+% amcl and move_base
+%-------------------------------------------------------------------------------
+% These two packages are used for localization (amcl) of the robot and path planning and control (move_base)
+% to get them started, launch the following
+roslaunch summit_xl_sim_bringup summit_xls_complete.launch amcl_and_mapserver_a:=true map_file_a:=my_map_1.yaml move_base_robot_a:=true
+%-------------------------------------------------------------------------------
+%-------------------------------------------------------------------------------
