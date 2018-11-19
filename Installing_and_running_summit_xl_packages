@@ -20,6 +20,9 @@ ros-kinetic-robotnik-sensors
 ros-kinetic-navigation
 ros-kinetic-gmapping
 
+% you may need to install the following as well
+sudo apt install ros-kinetic-gazebo-ros-control
+
 % I cloned and installed the following packages in catkin_ws
 % clone from
 https://github.com/RobotnikAutomation/summit_xl_common
@@ -34,9 +37,6 @@ rosdep install --from-paths src --ignore-src --rosdistro kinetic -y
 
 % now you can run a simulation by running the following command from the terminal
 roslaunch summit_xl_sim_bringup summit_xls_complete.launch
-
-% you may need to install the following, if the above launch file did not start correctly
-sudo apt install ros-kinetic-gazebo-ros-control
 
 %-------------------------------------------------------------------------------
 %-------------------------------------------------------------------------------
